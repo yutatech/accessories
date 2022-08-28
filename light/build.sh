@@ -1,0 +1,1 @@
+g++ -o light light.cpp ../accessoryBase/accessoryBase.cpp

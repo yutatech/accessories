@@ -1,0 +1,1 @@
+g++ -Wall -pthread -o remoconCrawler remoconCrawler.cpp ../remoconEmulator/remoconEmulator.cpp -lpigpio -lrt

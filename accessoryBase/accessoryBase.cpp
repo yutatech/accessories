@@ -1,0 +1,54 @@
+#include "accessoryBase.hpp"
+#include <string.h>
+#include <iostream>
+#include <fstream>
+#include <chrono>
+#include <thread>
+
+AccessoryBase::AccessoryBase(char **_argv) : argv(_argv), path(""), charArray({}) {
+}
+
+AccessoryBase::AccessoryBase(char **_argv, std::string _path) : argv(_argv), path(_path), charArray({}) {
+}
+
+void AccessoryBase::addCharacteristics(Characteristics characteristics) {
+    charArray.push_back(characteristics);
+}
+
+void AccessoryBase::run(){
+    if(strcmp(argv[1],"Get") == 0)
+        onGet();
+    else
+        onSet();
+}
+
+void AccessoryBase::onGet(){
+    for(const auto& e : charArray){
+        if(strcmp(argv[3], e.name) == 0){
+            if(e.onGet != NULL)
+                e.onGet(argv);
+            std::ifstream file;
+            while(!file){
+                file.open(path + std::string(e.name) + ".conf");
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+            std::cout << file.rdbuf() << std::endl;
+        }
+    }
+}
+
+void AccessoryBase::onSet(){
+    for(const auto& e : charArray){
+        if(strcmp(argv[3], e.name) == 0){
+            if(e.onSet != NULL){
+                e.onSet(argv);
+            }
+            std::ofstream file;
+            while(!file){
+                file.open(path + std::string(e.name) + ".conf");
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+            file << argv[4];
+        }
+    }
+}
