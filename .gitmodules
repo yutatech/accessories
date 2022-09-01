@@ -1,0 +1,3 @@
+[submodule "remoconCrawler/rpi4"]
+	path = remoconCrawler/rpi4
+	url = git@github.com:yutatech/rpi4.git

@@ -28,9 +28,10 @@ void AccessoryBase::onGet(){
             if(e.onGet != NULL)
                 e.onGet(argv);
             std::ifstream file;
+            file.open(path + std::string(e.name) + ".conf");
             while(!file){
-                file.open(path + std::string(e.name) + ".conf");
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                file.open(path + std::string(e.name) + ".conf");
             }
             std::cout << file.rdbuf() << std::endl;
         }
@@ -44,10 +45,12 @@ void AccessoryBase::onSet(){
                 e.onSet(argv);
             }
             std::ofstream file;
-            while(!file){
-                file.open(path + std::string(e.name) + ".conf");
+            file.open(path + std::string(e.name) + ".conf");
+            while (!file){
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                file.open(path + std::string(e.name) + ".conf");
             }
+
             file << argv[4];
         }
     }

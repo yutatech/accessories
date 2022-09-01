@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include "rpi4.hpp"
 
 class RemoconEmulator {
 public:
@@ -12,6 +13,7 @@ public:
     void push(std::string csv_filename);
 private:
     int gpio;
+    PWM pwm;
     //文字列のsplit機能
     std::vector<int> split(std::string str, char del) {
         int first = 0;

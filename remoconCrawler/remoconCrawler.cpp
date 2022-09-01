@@ -5,6 +5,7 @@
 
 
 int main(){
+    rpi4_init();
     RemoconEmulator remocon(18);
 
     while(true){
@@ -22,11 +23,10 @@ int main(){
 
         for(const auto& e : data){
             remocon.push(e);
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
             std::cout << e << std::endl;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
     return 0;
 }
