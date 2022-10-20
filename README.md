@@ -1,7 +1,7 @@
 # README
 
 ## About
-これは Apple HomeAppからシーリング洗いとをコントロールするためのアプリケーションです。
+これは Apple HomeAppからシーリングライトとエアコンをコントロールするためのアプリケーションです。
 
 ## Setup
 ### Step1

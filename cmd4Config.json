@@ -1,51 +1,67 @@
 {
-    "platform": "Cmd4",
-    "name": "Cmd4",
-    "accessories": [
+    "bridge": {
+        "name": "Homebridge BEB2",
+        "username": "0E:A2:96:3D:BE:B2",
+        "port": 51595,
+        "pin": "883-10-089",
+        "advertiser": "avahi"
+    },
+    "accessories": [],
+    "platforms": [
         {
-            "type": "Lightbulb",
-            "displayName": "Light",
-            "on": "FALSE",
-            "brightness": 0,
-            "name": "Light",
-            "stateChangeResponseTime": 3,
-            "polling": [
-                {
-                    "characteristic": "on",
-                    "interval": 2,
-                    "timeout": 1000
-                },
-                {
-                    "characteristic": "brightness",
-                    "interval": 2,
-                    "timeout": 1000
-                }
-            ],
-            "state_cmd": "/home/pi/accessories/light/light"
+            "name": "Config",
+            "port": 8581,
+            "platform": "config"
         },
         {
-            "type": "Thermostat",
-            "displayName": "Thermostat",
-            "currentHeatingCoolingState": "OFF",
-            "targetHeatingCoolingState": "OFF",
-            "currentTemperature": 25,
-            "targetTemperature": 25,
-            "temperatureDisplayUnits": "CELSIUS",
-            "name": "Thermostat",
-            "stateChangeResponseTime": 3,
-            "polling": [
+            "platform": "Cmd4",
+            "name": "Cmd4",
+            "accessories": [
                 {
-                    "characteristic": "targetHeatingCoolingState",
-                    "interval": 2,
-                    "timeout": 1000
+                    "type": "Lightbulb",
+                    "displayName": "Light",
+                    "on": "FALSE",
+                    "brightness": 0,
+                    "name": "Light",
+                    "stateChangeResponseTime": 3,
+                    "polling": [
+                        {
+                            "characteristic": "on",
+                            "interval": 2,
+                            "timeout": 1000
+                        },
+                        {
+                            "characteristic": "brightness",
+                            "interval": 2,
+                            "timeout": 1000
+                        }
+                    ],
+                    "state_cmd": "/home/pi/accessories/light/light"
                 },
                 {
-                    "characteristic": "targetTemperature",
-                    "interval": 2,
-                    "timeout": 1000
+                    "type": "Thermostat",
+                    "displayName": "Thermostat",
+                    "targetHeatingCoolingState": "OFF",
+                    "targetTemperature": 25,
+                    "currentTemperature": 25,
+                    "temperatureDisplayUnits": "CELSIUS",
+                    "name": "Thermostat",
+                    "stateChangeResponseTime": 3,
+                    "polling": [
+                        {
+                            "characteristic": "targetHeatingCoolingState",
+                            "interval": 2,
+                            "timeout": 1000
+                        },
+                        {
+                            "characteristic": "targetTemperature",
+                            "interval": 2,
+                            "timeout": 1000
+                        }
+                    ],
+                    "state_cmd": "/home/pi/accessories/thermostat/thermostat"
                 }
-            ],
-            "state_cmd": "/home/pi/accessories/thermostat/thermostat"
+            ]
         }
     ]
 }
