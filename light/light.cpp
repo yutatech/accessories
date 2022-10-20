@@ -8,7 +8,6 @@ std::string PATH = "/home/pi/accessories/light/";
 void push(std::string cmdFileName){
     std::ofstream ofs("/home/pi/accessories/cmdBuffer", std::ios::app);
     ofs << cmdFileName << std::endl;
-    std::cout << cmdFileName << std::endl;
 }
 
 void On_onSet(char **argv){
@@ -55,9 +54,6 @@ void adjust_brightness(int curBrightness, int tarBrightness){
 void Brightness_onSet(char **argv){
     int brightness = atoi(argv[4]);
     std::string brightness_str = argv[4];
-
-    // std::ofstream file(PATH + "Brightness.conf");
-    // file << brightness_str;
 
     std::fstream file(PATH + "Brightness.conf", std::ios::in);
     std::string str;

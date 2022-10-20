@@ -50,7 +50,6 @@ void AccessoryBase::onSet(){
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 file.open(path + std::string(e.name) + ".conf");
             }
-
             file << argv[4];
         }
     }

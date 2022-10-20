@@ -1,0 +1,1 @@
+g++ -o thermostat thermostat.cpp ../accessoryBase/accessoryBase.cpp
