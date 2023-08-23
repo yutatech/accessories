@@ -33,3 +33,6 @@ WantedBy=multi-user.target
 
 次に
 `sudo systemctl enable remoconCrawler`
+
+## Homebridgeの管理画面へのアクセス方法
+Raspberry PiにHomebridgeをインスールした時のデフォルトのままだと ` http://raspberrypi.local:8581/` にアクセス
