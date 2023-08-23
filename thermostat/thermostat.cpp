@@ -8,6 +8,7 @@ std::string PATH = "/home/pi/accessories/thermostat/";
 void push(std::string cmdFileName){
     std::ofstream ofs("/home/pi/accessories/cmdBuffer", std::ios::app);
     ofs << cmdFileName << std::endl;
+    ofs << cmdFileName << std::endl;
 }
 
 void TargetHeatingCoolingState_onSet(char **argv){
