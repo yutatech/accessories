@@ -6,10 +6,10 @@
 class Characteristics{
 public:
     char *name;
-    void (*onGet)(char **argv);
+    std::string (*onGet)(char **argv);
     void (*onSet)(char **argv);
 
-    Characteristics(char *_name, void (*_onGet)(char **argv), void (*_onSet)(char **argv)) : 
+    Characteristics(char *_name, std::string (*_onGet)(char **argv), void (*_onSet)(char **argv)) : 
         name(_name), onGet(_onGet), onSet(_onSet) {};
 };
 

@@ -1,17 +1,19 @@
 #include "../accessoryBase/accessoryBase.hpp"
 #include <fstream>
 #include <iostream>
-#include <string.h>
+#include <string>
 
 std::string PATH = "/home/pi/accessories/airPurifier/";
 
-void CurrentAirPurifierState_onGet(char **argv){
+std::string CurrentAirPurifierState_onGet(char **argv){
+  return "0";
 }
 
 void RotationSpeed_onSet(char **argv){
 }
 
-void RotationSpeed_onGet(char **argv){
+std::string RotationSpeed_onGet(char **argv){
+  return "10";
 }
 
 int main(int argc, char **argv){

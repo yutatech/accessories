@@ -25,8 +25,18 @@ void AccessoryBase::run(){
 void AccessoryBase::onGet(){
     for(const auto& e : charArray){
         if(strcmp(argv[3], e.name) == 0){
-            if(e.onGet != NULL)
-                e.onGet(argv);
+
+            if(e.onGet != NULL) {
+                std::string value = e.onGet(argv);
+                std::ofstream file;
+                file.open(path + std::string(e.name) + ".conf");
+                while (!file){
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    file.open(path + std::string(e.name) + ".conf");
+                }
+                file << value;
+                file.close();
+            }
             std::ifstream file;
             file.open(path + std::string(e.name) + ".conf");
             while(!file){
