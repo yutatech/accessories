@@ -1,0 +1,1 @@
+g++ -o airPurifier airPurifier.cpp ../accessoryBase/accessoryBase.cpp
