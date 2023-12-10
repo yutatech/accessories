@@ -36,3 +36,7 @@ WantedBy=multi-user.target
 
 ## Homebridgeの管理画面へのアクセス方法
 Raspberry PiにHomebridgeをインスールした時のデフォルトのままだと ` http://raspberrypi.local:8581/` にアクセス
+
+## CMD4から実行されるコマンド例
+`server.sh Set server On 1`
+[コマンド] [Set or Get] [displayName] [characteristic] [Setの場合は目標値 Getの場合はない]

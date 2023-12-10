@@ -1,67 +1,82 @@
 {
-    "bridge": {
-        "name": "Homebridge BEB2",
-        "username": "0E:A2:96:3D:BE:B2",
-        "port": 51595,
-        "pin": "883-10-089",
-        "advertiser": "avahi"
-    },
-    "accessories": [],
-    "platforms": [
+    "platform": "Cmd4",
+    "name": "Cmd4",
+    "accessories": [
         {
-            "name": "Config",
-            "port": 8581,
-            "platform": "config"
-        },
-        {
-            "platform": "Cmd4",
-            "name": "Cmd4",
-            "accessories": [
+            "type": "Lightbulb",
+            "displayName": "Light",
+            "on": "FALSE",
+            "brightness": 0,
+            "name": "Light",
+            "stateChangeResponseTime": 3,
+            "polling": [
                 {
-                    "type": "Lightbulb",
-                    "displayName": "Light",
-                    "on": "FALSE",
-                    "brightness": 0,
-                    "name": "Light",
-                    "stateChangeResponseTime": 3,
-                    "polling": [
-                        {
-                            "characteristic": "on",
-                            "interval": 2,
-                            "timeout": 1000
-                        },
-                        {
-                            "characteristic": "brightness",
-                            "interval": 2,
-                            "timeout": 1000
-                        }
-                    ],
-                    "state_cmd": "/home/pi/accessories/light/light"
+                    "characteristic": "on",
+                    "interval": 2,
+                    "timeout": 1000
                 },
                 {
-                    "type": "Thermostat",
-                    "displayName": "Thermostat",
-                    "targetHeatingCoolingState": "OFF",
-                    "targetTemperature": 25,
-                    "currentTemperature": 25,
-                    "temperatureDisplayUnits": "CELSIUS",
-                    "name": "Thermostat",
-                    "stateChangeResponseTime": 3,
-                    "polling": [
-                        {
-                            "characteristic": "targetHeatingCoolingState",
-                            "interval": 2,
-                            "timeout": 1000
-                        },
-                        {
-                            "characteristic": "targetTemperature",
-                            "interval": 2,
-                            "timeout": 1000
-                        }
-                    ],
-                    "state_cmd": "/home/pi/accessories/thermostat/thermostat"
+                    "characteristic": "brightness",
+                    "interval": 2,
+                    "timeout": 1000
                 }
-            ]
+            ],
+            "state_cmd": "/home/pi/accessories/light/light"
+        },
+        {
+            "type": "Thermostat",
+            "displayName": "Thermostat",
+            "targetHeatingCoolingState": "OFF",
+            "targetTemperature": 25,
+            "currentTemperature": 25,
+            "temperatureDisplayUnits": "CELSIUS",
+            "name": "Thermostat",
+            "stateChangeResponseTime": 3,
+            "polling": [
+                {
+                    "characteristic": "targetHeatingCoolingState",
+                    "interval": 2,
+                    "timeout": 1000
+                },
+                {
+                    "characteristic": "targetTemperature",
+                    "interval": 2,
+                    "timeout": 1000
+                }
+            ],
+            "state_cmd": "/home/pi/accessories/thermostat/thermostat"
+        },
+        {
+            "type": "AirPurifier",
+            "displayName": "AirPurifier",
+            "active": "ACTIVE",
+            "currentAirPurifierState": "INACTIVE",
+            "targetAirPurifierState": "MANUAL",
+            "name": "AirPurifier",
+            "rotationSpeed": 0,
+            "polling": [
+                {
+                    "characteristic": "active",
+                    "interval": 2,
+                    "timeout": 1000
+                },
+                {
+                    "characteristic": "currentAirPurifierState",
+                    "interval": 2,
+                    "timeout": 1000
+                },
+                {
+                    "characteristic": "targetAirPurifierState",
+                    "interval": 2,
+                    "timeout": 1000
+                },
+                {
+                    "characteristic": "rotationSpeed",
+                    "interval": 2,
+                    "timeout": 1000
+                }
+            ],
+            "state_cmd": "/home/pi/accessories/airPurifier/airPurifier"
         }
     ]
 }
