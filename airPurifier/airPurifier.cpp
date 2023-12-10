@@ -75,9 +75,9 @@ void SendToSever(int clientSocket, const char *data){
     }
 }
 
-int ReceiveFromServer(int clientSocket, char *buffer){
-    memset(buffer, 0, sizeof(buffer));
-    ssize_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
+int ReceiveFromServer(int clientSocket, char *buffer, int len){
+    memset(buffer, 0, len);
+    ssize_t bytesRead = recv(clientSocket, buffer, len, 0);
     return bytesRead;
 }
 
@@ -109,7 +109,7 @@ int ReadCurrentValue(){
     SendToSever(clientSocket, "req_ap_stat\n");
 
     char buffer[1024];
-    int size = ReceiveFromServer(clientSocket, buffer);
+    int size = ReceiveFromServer(clientSocket, buffer, sizeof(buffer));
 
     close(clientSocket);
 
