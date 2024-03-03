@@ -1,6 +1,11 @@
+/*
+   Partition SchemeMinimal SPIFFS (1.9MB APP with OTA/190KB SPIFFS)
+*/
+
 #include <WiFi.h>
 #include <ArduinoOTA.h>
 #include <ESPmDNS.h>
+//#include "BluetoothSerial.h"
 
 #define STATE_LAMP_1_PIN 35
 #define STATE_LAMP_2_PIN 32
@@ -37,8 +42,17 @@ Button power_button(19);
 int cur_power = 0;
 int tar_power = 0;
 
+hw_timer_t * timer;
+volatile bool timeout_flag = false;
+void IRAM_ATTR onTimer() {
+  timeout_flag = true;
+}
+
+//BluetoothSerial SerialBT;
+
 void setup() {
   Serial.begin(115200);
+  //  SerialBT.begin("ESP32-BT-Slave");
 
   pinMode(32, INPUT); // state lamp 2
   pinMode(33, INPUT); // state lamp 3
@@ -71,6 +85,12 @@ void setup() {
   ArduinoOTA.begin();
 
   xTaskCreatePinnedToCore(Core0a, "Core0a", 4096, NULL, 3, &thp[0], 0);
+
+  timer = timerBegin(0, 80, true);
+  timerAttachInterrupt(timer, &onTimer, true);
+  timerAlarmWrite(timer, 3000000, true);
+  timerAlarmEnable(timer);
+
 }
 
 String rep_ap_stat() {
@@ -108,16 +128,22 @@ String processCommand(const String cmd) {
 void loop() {
   ArduinoOTA.handle();
   WiFiClient client = server.available();
+  timeout_flag = false;
+  timerWrite(timer, 0);
+
+  delay(1);
 
   if (client) {
     String currentLine = "";
-    while (client.connected()) {
-      while (client.available()) {
+    while (client.connected() && !timeout_flag) {
+      delay(1);
+      while (client.available() && !timeout_flag) {
+        delay(1);
         char c = client.read();
         currentLine += c;
         if (c == '\n') {
           String reply = processCommand(currentLine);
-          if (reply.length() > 0){
+          if (reply.length() > 0) {
             Serial.println(reply);
             client.print(reply);
           }
