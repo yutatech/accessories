@@ -150,6 +150,39 @@ void loop() {
     }
     client.stop();
   }
+
+  if (WiFi.status() != WL_CONNECTED) {
+    bool power3flag = false;
+    if (cur_power == 3) {
+      tar_power = 0;
+      power3flag = true;
+      timerWrite(timer, 0);
+      delay(1000);
+      timerWrite(timer, 0);
+      delay(1000);
+    }
+    WiFi.disconnect();
+    WiFi.reconnect();
+    Serial.print("WiFi Reconnecting");
+    int counter = 0;
+    while (WiFi.status() != WL_CONNECTED && counter++ < 30) {
+      delay(500);
+      timerWrite(timer, 0);
+      Serial.print(".");
+    }
+    if (counter < 30) {
+      Serial.println("WiFi Reconnected");
+      Serial.print("IP address: ");
+      Serial.println(WiFi.localIP());
+    }
+    else {
+      Serial.println("WiFi Reconnection Failed");
+    }
+
+    if (power3flag) {
+      tar_power = 3;
+    }
+  }
 }
 
 int state_lamp_1_value;
