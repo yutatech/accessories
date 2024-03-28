@@ -5,7 +5,6 @@
 #include <WiFi.h>
 #include <ArduinoOTA.h>
 #include <ESPmDNS.h>
-//#include "BluetoothSerial.h"
 
 #define STATE_LAMP_1_PIN 35
 #define STATE_LAMP_2_PIN 32
@@ -42,17 +41,21 @@ Button power_button(19);
 int cur_power = 0;
 int tar_power = 0;
 
+#define TIMEOUT 2000
 hw_timer_t * timer;
-volatile bool timeout_flag = false;
-void IRAM_ATTR onTimer() {
-  timeout_flag = true;
+void IRAM_ATTR resetModule() {
+  Serial.println("Reboooooot!!");
+  esp_restart();
 }
 
-//BluetoothSerial SerialBT;
-
 void setup() {
+  timer = timerBegin(0, 80, true);
+  timerAttachInterrupt(timer, &resetModule, true);
+  timerAlarmWrite(timer, TIMEOUT * 1000, false);
+  timerAlarmEnable(timer);
+  timerWrite(timer, 0);
+
   Serial.begin(115200);
-  //  SerialBT.begin("ESP32-BT-Slave");
 
   pinMode(32, INPUT); // state lamp 2
   pinMode(33, INPUT); // state lamp 3
@@ -66,6 +69,7 @@ void setup() {
   Serial.print("WiFi Connecting");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
+    timerWrite(timer, 0);
     Serial.print(".");
   }
   Serial.println("WiFi Connected");
@@ -85,12 +89,6 @@ void setup() {
   ArduinoOTA.begin();
 
   xTaskCreatePinnedToCore(Core0a, "Core0a", 4096, NULL, 3, &thp[0], 0);
-
-  timer = timerBegin(0, 80, true);
-  timerAttachInterrupt(timer, &onTimer, true);
-  timerAlarmWrite(timer, 3000000, true);
-  timerAlarmEnable(timer);
-
 }
 
 String rep_ap_stat() {
@@ -128,20 +126,19 @@ String processCommand(const String cmd) {
 void loop() {
   ArduinoOTA.handle();
   WiFiClient client = server.available();
-  timeout_flag = false;
-  timerWrite(timer, 0);
 
   delay(1);
 
   if (client) {
     String currentLine = "";
-    while (client.connected() && !timeout_flag) {
+    while (client.connected()) {
       delay(1);
-      while (client.available() && !timeout_flag) {
+      while (client.available()) {
         delay(1);
         char c = client.read();
         currentLine += c;
         if (c == '\n') {
+          Serial.println(currentLine);
           String reply = processCommand(currentLine);
           if (reply.length() > 0) {
             Serial.println(reply);
@@ -161,6 +158,7 @@ int prv_power = 0;
 unsigned long push_interval_counter = PUSH_INTERVAL;
 void Core0a(void *args) {
   while (1) {
+    timerWrite(timer, 0);
     /* read power indicator */
     const float rate = 0.01;
     state_lamp_1_value = state_lamp_1_value * (1 - rate) + analogRead(STATE_LAMP_1_PIN) * rate;
