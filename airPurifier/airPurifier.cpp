@@ -33,7 +33,7 @@ esp -> raspi
 
 int ConnectToServer(){
     const char* hostname = "AirPurifier.local"; // サーバーのドメイン名
-    const char* port = "80";             // ポート番号
+    const char* port = "85";             // ポート番号
 
     struct addrinfo hints, *serverInfo;
     memset(&hints, 0, sizeof hints);
