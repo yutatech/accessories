@@ -10,7 +10,7 @@
 #define STATE_LAMP_2_PIN 32
 #define STATE_LAMP_3_PIN 33
 
-WiFiServer server(80);
+WiFiServer server(85);
 
 TaskHandle_t thp[1];
 
