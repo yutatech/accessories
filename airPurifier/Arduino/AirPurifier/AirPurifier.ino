@@ -41,10 +41,10 @@ Button power_button(19);
 int cur_power = 0;
 int tar_power = 0;
 
-#define TIMEOUT 2000
+#define TIMEOUT 120000
 hw_timer_t * timer1;
 
-#define WIFI_TIMEOUT 10000
+#define WIFI_TIMEOUT 120000
 hw_timer_t * timer2;
 void IRAM_ATTR resetModule() {
   Serial.println("Reboooooot!!");
