@@ -1,10 +1,17 @@
 /*
    Partition SchemeMinimal SPIFFS (1.9MB APP with OTA/190KB SPIFFS)
+
+   WebSerial is available on "http://airpurifier.local/webserial"
 */
 
 #include <WiFi.h>
 #include <ArduinoOTA.h>
 #include <ESPmDNS.h>
+
+
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include <WebSerial.h>
 
 #define STATE_LAMP_1_PIN 35
 #define STATE_LAMP_2_PIN 32
@@ -51,6 +58,8 @@ void IRAM_ATTR resetModule() {
   esp_restart();
 }
 
+AsyncWebServer browser(80);
+
 void setup() {
   timer1 = timerBegin(0, 80, true);
   timerAttachInterrupt(timer1, &resetModule, true);
@@ -74,6 +83,7 @@ void setup() {
   pinMode(18, OUTPUT); // light button
   pinMode(19, OUTPUT); // power button
 
+  WiFi.mode(WIFI_STA);
   WiFi.begin();
   Serial.print("WiFi Connecting");
   while (WiFi.status() != WL_CONNECTED) {
@@ -97,6 +107,9 @@ void setup() {
   server.begin();
   ArduinoOTA.setHostname("AirPurifier");
   ArduinoOTA.begin();
+  
+  WebSerial.begin(&browser);
+  browser.begin();
 
   xTaskCreatePinnedToCore(Core0a, "Core0a", 4096, NULL, 3, &thp[0], 0);
 }
@@ -149,10 +162,10 @@ void loop() {
         currentLine += c;
         if (c == '\n') {
           timerWrite(timer2, 0);
-          Serial.println(currentLine);
+          WebSerial.print(currentLine);
           String reply = processCommand(currentLine);
           if (reply.length() > 0) {
-            Serial.println(reply);
+            WebSerial.print(reply);
             client.print(reply);
           }
           currentLine = "";
