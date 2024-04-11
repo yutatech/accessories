@@ -42,18 +42,27 @@ int cur_power = 0;
 int tar_power = 0;
 
 #define TIMEOUT 2000
-hw_timer_t * timer;
+hw_timer_t * timer1;
+
+#define WIFI_TIMEOUT 10000
+hw_timer_t * timer2;
 void IRAM_ATTR resetModule() {
   Serial.println("Reboooooot!!");
   esp_restart();
 }
 
 void setup() {
-  timer = timerBegin(0, 80, true);
-  timerAttachInterrupt(timer, &resetModule, true);
-  timerAlarmWrite(timer, TIMEOUT * 1000, false);
-  timerAlarmEnable(timer);
-  timerWrite(timer, 0);
+  timer1 = timerBegin(0, 80, true);
+  timerAttachInterrupt(timer1, &resetModule, true);
+  timerAlarmWrite(timer1, TIMEOUT * 1000, false);
+  timerAlarmEnable(timer1);
+  timerWrite(timer1, 0);
+  
+  timer2 = timerBegin(1, 80, true);
+  timerAttachInterrupt(timer2, &resetModule, true);
+  timerAlarmWrite(timer2, WIFI_TIMEOUT * 1000, false);
+  timerAlarmEnable(timer2);
+  timerWrite(timer2, 0);
 
   Serial.begin(115200);
 
@@ -69,7 +78,8 @@ void setup() {
   Serial.print("WiFi Connecting");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    timerWrite(timer, 0);
+    timerWrite(timer1, 0);
+    timerWrite(timer2, 0);
     Serial.print(".");
   }
   Serial.println("WiFi Connected");
@@ -138,6 +148,7 @@ void loop() {
         char c = client.read();
         currentLine += c;
         if (c == '\n') {
+          timerWrite(timer2, 0);
           Serial.println(currentLine);
           String reply = processCommand(currentLine);
           if (reply.length() > 0) {
@@ -156,9 +167,9 @@ void loop() {
     if (cur_power == 3) {
       tar_power = 0;
       power3flag = true;
-      timerWrite(timer, 0);
+      timerWrite(timer2, 0);
       delay(1000);
-      timerWrite(timer, 0);
+      timerWrite(timer2, 0);
       delay(1000);
     }
     WiFi.disconnect();
@@ -167,7 +178,7 @@ void loop() {
     int counter = 0;
     while (WiFi.status() != WL_CONNECTED && counter++ < 30) {
       delay(500);
-      timerWrite(timer, 0);
+      timerWrite(timer2, 0);
       Serial.print(".");
     }
     if (counter < 30) {
@@ -191,7 +202,7 @@ int prv_power = 0;
 unsigned long push_interval_counter = PUSH_INTERVAL;
 void Core0a(void *args) {
   while (1) {
-    timerWrite(timer, 0);
+    timerWrite(timer1, 0);
     /* read power indicator */
     const float rate = 0.01;
     state_lamp_1_value = state_lamp_1_value * (1 - rate) + analogRead(STATE_LAMP_1_PIN) * rate;
