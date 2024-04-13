@@ -118,7 +118,7 @@ int ReadCurrentValue(){
     else if (strcmp(buffer, "cur_ap_low\n") == 0)
       return 30;
     else if (strcmp(buffer, "cur_ap_middle\n") == 0)
-      return 60;
+      return 70;
     else if (strcmp(buffer, "cur_ap_high\n") == 0)
       return 100;
 
@@ -156,15 +156,15 @@ void RotationSpeed_onSet(char **argv){
     int speed = atoi(argv[4]);
     int stat_num = 0;
 
-    if (speed <= 15) {
+    if (speed == 0) {
         speed = 0;
         stat_num = 0;
     }
-    else if (15 < speed && speed <= 45) {
+    else if (0 < speed && speed <= 30) {
         speed = 30;
         stat_num = 1;
     }
-    else if (45 < speed && speed <= 80) {
+    else if (30 < speed && speed <= 70) {
         speed = 60;
         stat_num = 2;
     }
