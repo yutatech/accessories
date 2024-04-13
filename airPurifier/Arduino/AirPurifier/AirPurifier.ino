@@ -115,13 +115,13 @@ void setup() {
 }
 
 String rep_ap_stat() {
-  if (cur_power == 0)
+  if (tar_power == 0)
     return "cur_ap_off\n";
-  else if (cur_power == 1)
+  else if (tar_power == 1)
     return "cur_ap_low\n";
-  else if (cur_power == 2)
+  else if (tar_power == 2)
     return "cur_ap_middle\n";
-  else if (cur_power == 3)
+  else if (tar_power == 3)
     return "cur_ap_high\n";
 }
 
