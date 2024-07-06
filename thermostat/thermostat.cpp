@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iostream>
 #include <string.h>
+#include <chrono>
+#include <thread>
 
 std::string PATH = "/home/pi/accessories/thermostat/";
 
@@ -30,6 +32,15 @@ void TargetHeatingCoolingState_onSet(char **argv){
         strcpy(argv[4], "0");
         push(PATH + "cmd_off_cool_18.csv");
     }
+
+    // 冷暖房時は除湿機能を強制的にOFFにする
+    std::ofstream file;
+    file.open(PATH + std::string("Active") + ".conf");
+    while (!file){
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        file.open(PATH + std::string("Active") + ".conf");
+    }
+    file << 0;
 }
 
 
@@ -65,11 +76,35 @@ void TargetTemperature_onSet(char **argv){
     push(PATH + "cmd_on_" + state_str + "_" + temp_str + ".csv");
 }
 
+// 除湿時は冷暖房機能を強制的にOFFにする
+void HumidifierDehumidifier_onSet(char **argv){
+    strcpy(argv[4], std::to_string(2).c_str()); // 強制的にDehumidifierにする
+    push(PATH + "cmd_on_dehumidification.csv");
+    printf("abcdef");
+
+    std::ofstream file;
+    file.open(PATH + std::string("TargetHeatingCoolingState") + ".conf");
+    while (!file){
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        file.open(PATH + std::string("TargetHeatingCoolingState") + ".conf");
+    }
+    file << 0;
+}
+
+
+void Active_onSet(char **argv){
+    if (atoi(argv[4]) == 0) {
+        push(PATH + "cmd_off_cool_18.csv");
+    }
+}
+
 int main(int argc, char **argv){
     AccessoryBase thermostat(argv, PATH);
 
     thermostat.addCharacteristics(Characteristics("TargetHeatingCoolingState", NULL, TargetHeatingCoolingState_onSet));
     thermostat.addCharacteristics(Characteristics("TargetTemperature", NULL, TargetTemperature_onSet));
+    thermostat.addCharacteristics(Characteristics("TargetHumidifierDehumidifierState", NULL, HumidifierDehumidifier_onSet));
+    thermostat.addCharacteristics(Characteristics("Active", NULL, Active_onSet));
 
     thermostat.run();
 
@@ -78,6 +113,13 @@ int main(int argc, char **argv){
 
     if(strcmp(argv[3], "CurrentHeatingCoolingState") == 0){
         std::ifstream ofs(PATH + "TargetHeatingCoolingState.conf");
+        std::string state_str;
+        std::getline(ofs, state_str);
+        printf(state_str.c_str());
+    }
+
+    if(strcmp(argv[3], "CurrentHumidifierDehumidifierState") == 0){
+        std::ifstream ofs(PATH + "TargetHumidifierDehumidifierState.conf");
         std::string state_str;
         std::getline(ofs, state_str);
         printf(state_str.c_str());

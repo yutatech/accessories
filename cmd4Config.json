@@ -47,6 +47,29 @@
             "state_cmd": "/home/pi/accessories/thermostat/thermostat"
         },
         {
+            "type": "HumidifierDehumidifier",
+            "displayName": "Dehumidifier",
+            "currentRelativeHumidity": 60,
+            "currentHumidifierDehumidifierState": "DEHUMIDIFYING",
+            "targetHumidifierDehumidifierState": "DEHUMIDIFIER",
+            "active": "INACTIVE",
+            "name": "HumidifierDehumidifier",
+            "stateChangeResponseTime": 3,
+            "polling": [
+                {
+                    "characteristic": "targetHumidifierDehumidifierState",
+                    "interval": 2,
+                    "timeout": 1000
+                },
+                {
+                    "characteristic": "active",
+                    "interval": 2,
+                    "timeout": 1000
+                }
+            ],
+            "state_cmd": "/home/pi/accessories/thermostat/thermostat"
+        },
+        {
             "type": "AirPurifier",
             "displayName": "AirPurifier",
             "active": "ACTIVE",

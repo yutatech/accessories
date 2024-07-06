@@ -42,6 +42,8 @@ Raspberry PiにHomebridgeをインスールした時のデフォルトのまま�
 - `server.sh Set server On 1`
 - `./airPurifier Set airpurifier RotationSpeed 20`
 - `./airPurifier Get airpurifier RotationSpeed`
+- `/home/pi/accessories/thermostat/thermostat Get Thermostat TargetHeatingCoolingState`
+- `/home/pi/accessories/thermostat/thermostat Set Thermostat TargetHeatingCoolingState 1`
 
 [コマンド] [Set or Get] [displayName] [characteristic] [Setの場合は目標値 Getの場合はない]
 
