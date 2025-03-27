@@ -134,7 +134,7 @@ void Active_onSet(char **argv){
     }
 }
 
-std::string Active_onGet(char **argv){
+std::string Active_onGet(char **argv, const std::string current_value){
     int speed = ReadCurrentValue();
 
     if (speed != 0)
@@ -143,7 +143,7 @@ std::string Active_onGet(char **argv){
       return "0";
 }
 
-std::string CurrentAirPurifierState_onGet(char **argv){
+std::string CurrentAirPurifierState_onGet(char **argv, const std::string current_value){
     int speed = ReadCurrentValue();
 
     if (speed != 0)
@@ -152,36 +152,46 @@ std::string CurrentAirPurifierState_onGet(char **argv){
       return "0";
 }
 
+int SpeedToTargetValue(int speed) {
+  int target_value = 0;
+
+  if (speed == 0) {
+      speed = 0;
+      target_value = 0;
+  }
+  else if (0 < speed && speed <= 30) {
+      speed = 30;
+      target_value = 1;
+  }
+  else if (30 < speed && speed <= 70) {
+      speed = 60;
+      target_value = 2;
+  }
+  else {
+      speed = 100;
+      target_value = 3;
+  }
+  return target_value;
+}
+
 void RotationSpeed_onSet(char **argv){
     int speed = atoi(argv[4]);
-    int stat_num = 0;
-
-    if (speed == 0) {
-        speed = 0;
-        stat_num = 0;
-    }
-    else if (0 < speed && speed <= 30) {
-        speed = 30;
-        stat_num = 1;
-    }
-    else if (30 < speed && speed <= 70) {
-        speed = 60;
-        stat_num = 2;
-    }
-    else {
-        speed = 100;
-        stat_num = 3;
-    }
 
     std::string speed_str = std::to_string(speed);
     strcpy(argv[4], speed_str.c_str());
 
-    SendTargetValue(stat_num);
+    SendTargetValue(SpeedToTargetValue(speed));
 }
 
-std::string RotationSpeed_onGet(char **argv){
-    int speed = ReadCurrentValue();
-    return std::to_string(speed);
+std::string RotationSpeed_onGet(char **argv, const std::string current_value){
+    int real_speed = ReadCurrentValue();
+    int configured_speed = std::stoi(current_value);
+
+    if (real_speed != configured_speed) {
+      SendTargetValue(SpeedToTargetValue(configured_speed));
+    }
+
+    return std::to_string(configured_speed);
 }
 
 int main(int argc, char **argv){

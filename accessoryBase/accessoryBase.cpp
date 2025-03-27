@@ -4,6 +4,7 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
+#include <sstream>
 
 AccessoryBase::AccessoryBase(char **_argv) : argv(_argv), path(""), charArray({}) {
 }
@@ -22,28 +23,40 @@ void AccessoryBase::run(){
         onSet();
 }
 
+
+std::string AccessoryBase::readFile(const std::string file_name) {
+    std::ifstream file;
+    file.open(file_name);
+    while (!file) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        file.open(file_name);
+    }
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    return buffer.str();
+}
+
+void AccessoryBase::writeFile(const std::string file_name, const std::string content) {
+    std::ofstream file;
+    file.open(file_name);
+    while (!file){
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        file.open(file_name);
+    }
+    file << content;
+    file.close();
+}
+
 void AccessoryBase::onGet(){
     for(const auto& e : charArray){
         if(strcmp(argv[3], e.name) == 0){
+            std::string file_name = path + std::string(e.name) + ".conf";
 
             if(e.onGet != NULL) {
-                std::string value = e.onGet(argv);
-                std::ofstream file;
-                file.open(path + std::string(e.name) + ".conf");
-                while (!file){
-                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                    file.open(path + std::string(e.name) + ".conf");
-                }
-                file << value;
-                file.close();
+                std::string value = e.onGet(argv, readFile(file_name));
+                writeFile(file_name, value);
             }
-            std::ifstream file;
-            file.open(path + std::string(e.name) + ".conf");
-            while(!file){
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                file.open(path + std::string(e.name) + ".conf");
-            }
-            std::cout << file.rdbuf() << std::endl;
+            std::cout << readFile(file_name) << std::endl;
         }
     }
 }
