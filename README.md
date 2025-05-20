@@ -52,6 +52,9 @@ Raspberry PiにHomebridgeをインスールした時のデフォルトのまま�
 
 例:`/home/pi/accessories/light/cmd_zento.csv`
 
+## remocon_analyzer
+arduinoを用いてリモコンの赤外線信号を解析し、シリアルモニターにscvデータを出力するプログラム
+
 ## デバイス一覧
 - 照明 `accesories/light`
 - エアコン `accesories/thermostat`
